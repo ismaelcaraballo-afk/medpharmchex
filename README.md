@@ -1,73 +1,79 @@
-# React + TypeScript + Vite
+# MedChex — Medication Interaction Checker
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+**Does it mix?** MedChex checks drug combinations for dangerous interactions, scores severity using real FDA adverse event data, and explains the risks in plain English using AI.
 
-Currently, two official plugins are available:
+Built as a Pursuit L2 capstone project by Ismael Caraballo and Paula Maiguru.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+---
 
-## React Compiler
+## What It Does
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+1. **Look up drugs** — Resolves drug names to RxCUI codes via NIH RxNorm
+2. **Check interactions** — Queries NIH RxNorm interaction database
+3. **Score severity** — Analyzes FDA FAERS adverse event reports for real-world outcomes
+4. **Explain in plain English** — Claude AI summarizes the risks in clear, non-clinical language
 
-## Expanding the ESLint configuration
+---
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+## Tech Stack
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+| Layer | Technology |
+|-------|-----------|
+| Frontend | React 19 + TypeScript + Vite + TailwindCSS |
+| Backend | Node.js + Express |
+| AI | Anthropic Claude (claude-sonnet-4-6) |
+| Drug Data | NIH RxNorm API |
+| Safety Data | FDA FAERS (OpenFDA) |
+| Animations | Framer Motion |
+| Charts | Recharts |
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+---
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+## Quick Start
+
+```bash
+# Install dependencies
+npm install
+cd server && npm install && cd ..
+
+# Configure environment
+cp .env.example .env.local
+# Add your ANTHROPIC_API_KEY to .env.local
+
+# Run dev servers
+npm run dev        # frontend on http://localhost:5173
+cd server && node index.js  # backend on http://localhost:3000
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+---
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+## API Endpoints
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+| Endpoint | Method | Description |
+|----------|--------|-------------|
+| `/api/drug/rxcui` | GET | Resolve drug name → RxCUI |
+| `/api/interactions` | GET | Check interactions by RxCUI list |
+| `/api/faers` | GET | FDA adverse event data |
+| `/api/score` | POST | Severity scoring (SAFE / CAUTION / DANGEROUS) |
+| `/api/explain` | POST | Claude AI plain-English explanation |
+
+---
+
+## Why These Data Sources?
+
+- **RxNorm** — NIH's official drug vocabulary. Industry standard for medication interoperability.
+- **FDA FAERS** — Real-world adverse event reports submitted by doctors and patients. Severity is derived from actual outcomes, not AI guesses.
+- **Claude AI** — Explains findings in plain language. The AI does *not* determine severity — that comes from FDA data.
+
+---
+
+## Team
+
+- **Ismael Caraballo** ([@ismaelcaraballo-afk](https://github.com/ismaelcaraballo-afk)) — Backend, API integration, architecture
+- **Paula Maiguru** ([@PMAIGURU2026](https://github.com/PMAIGURU2026)) — Frontend, UI/UX, product vision
+
+---
+
+## Status
+
+Active development — Pursuit L2 Capstone. Demo Day: March 18, 2026.
