@@ -7,16 +7,26 @@ import rateLimit from 'express-rate-limit'
 import NodeCache from 'node-cache'
 
 dotenv.config()
+
+// WHY: Fail fast if required env vars are missing.
+// A cryptic "Cannot read properties of undefined" mid-demo is worse than a clear startup error.
+if (!process.env.ANTHROPIC_API_KEY) {
+  console.error('ERROR: ANTHROPIC_API_KEY is not set. Add it to your .env file.')
+  process.exit(1)
+}
+
 const app = express()
+const PORT = process.env.PORT || 3001
 
 // WHY: CORS restricted to known frontend origin in production.
 // Allowing all origins (*) is a security risk — any website could call our API.
 // In development we allow localhost; in production we lock to the Vercel frontend URL.
-app.use(cors({
-  origin: process.env.NODE_ENV === 'production'
-    ? process.env.FRONTEND_URL
-    : 'http://localhost:5173'
-}))
+// WHY fallback: if FRONTEND_URL is missing in production, fail with clear message not silent block.
+const allowedOrigin = process.env.NODE_ENV === 'production'
+  ? (process.env.FRONTEND_URL || (() => { throw new Error('FRONTEND_URL must be set in production') })())
+  : 'http://localhost:5173'
+
+app.use(cors({ origin: allowedOrigin }))
 
 app.use(express.json())
 
@@ -221,4 +231,4 @@ Use plain language. No medical jargon. Be direct and caring. End with: "For info
   }
 })
 
-app.listen(3001, () => console.log('MedChex backend running on :3001'))
+app.listen(PORT, () => console.log(`MedChex backend running on :${PORT}`))
