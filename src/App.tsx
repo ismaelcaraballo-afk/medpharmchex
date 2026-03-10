@@ -16,9 +16,9 @@ interface CheckResult {
   faersCount?: number
 }
 
-// Languages where visual-first mode activates automatically
-// (low-literacy communities where text alone is insufficient)
-const VISUAL_FIRST_LANGS = new Set(['nah', 'es', 'hi', 'ar', 'bn', 'ur'])
+// Visual-first mode: Nahuatl only — non-literate speakers who may not read any script.
+// All other languages (including Arabic, Hindi, Urdu) get the full ResultCard with optional audio.
+const VISUAL_FIRST_LANGS = new Set(['nah'])
 
 export default function App() {
   const { t, i18n } = useTranslation()

@@ -74,7 +74,7 @@ export default function ResultCard({ drugs, severity, explanation, interactions,
 
       {/* Print / Save button */}
       <button className="print-btn no-print" onClick={handlePrint}>
-        🖨 Print / Save as PDF
+        🖨 {t('result.print_btn')}
       </button>
     </div>
   )

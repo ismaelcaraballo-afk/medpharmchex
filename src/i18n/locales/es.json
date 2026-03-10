@@ -16,7 +16,8 @@
     "what_it_means": "Qué significa esto",
     "known_interactions": "Interacciones conocidas ({{count}})",
     "adverse_events": "{{count}} reportes de eventos adversos en la base de datos FDA FAERS para estos medicamentos",
-    "disclaimer": "Esta herramienta es solo informativa. Siempre consulte a un profesional de la salud antes de cambiar sus medicamentos."
+    "disclaimer": "Esta herramienta es solo informativa. Siempre consulte a un profesional de la salud antes de cambiar sus medicamentos.",
+    "print_btn": "Imprimir / Guardar como PDF"
   },
   "severity": {
     "SAFE": "✓ SEGURO",

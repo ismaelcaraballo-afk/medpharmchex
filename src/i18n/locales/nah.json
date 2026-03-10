@@ -16,7 +16,8 @@
     "what_it_means": "Tlen quihtoa nochi",
     "known_interactions": "Iximachilli tlanextilli ({{count}})",
     "adverse_events": "{{count}} tlahtoa tlen amo cualli FDA FAERS ica in pahpahme",
-    "disclaimer": "In tlapalehuiliztli zan ica tlahtoa. Ma xicmopohua ica ce ticitl amo xicpalehui in pahme."
+    "disclaimer": "In tlapalehuiliztli zan ica tlahtoa. Ma xicmopohua ica ce ticitl amo xicpalehui in pahme.",
+    "print_btn": "Xictlahtoa / PDF ipan ticpiya"
   },
   "severity": {
     "SAFE": "✓ CUALLI",

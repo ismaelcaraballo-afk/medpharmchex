@@ -87,6 +87,25 @@ const DEMO_FAERS = {
   'aspirin': 35000,
 }
 
+// Pre-written explanations for demo drug pairs — avoids live Anthropic call during presentation
+const DEMO_EXPLANATIONS = {
+  'warfarin,ibuprofen': `Warfarin is a blood thinner, and ibuprofen is a common anti-inflammatory painkiller. When taken together, ibuprofen can increase the blood-thinning effect of warfarin significantly, raising your risk of serious or life-threatening bleeding — including internal bleeding you might not notice.
+
+This combination is considered dangerous. The risk is real even with a single dose of ibuprofen.
+
+Do not take these medications together without speaking to your doctor or pharmacist first. If you need pain relief, ask about safer alternatives like acetaminophen (Tylenol). If you experience unusual bruising, prolonged bleeding, or blood in your urine or stool, seek medical attention immediately.`,
+  'warfarin,aspirin': `Warfarin and aspirin both affect how your blood clots, but in different ways. Taking them together significantly increases your risk of serious bleeding — including in your stomach, brain, or other internal organs.
+
+This combination is generally contraindicated, meaning most patients should not take them together unless specifically directed by a physician for a particular medical condition.
+
+Contact your doctor before combining these medications. Do not stop either medication on your own without medical guidance.`,
+  'lisinopril,ibuprofen': `Lisinopril is a blood pressure medication, and ibuprofen is a common anti-inflammatory pain reliever. Ibuprofen can reduce how well lisinopril controls your blood pressure, and the combination can also put extra stress on your kidneys.
+
+This is a moderate interaction worth discussing with your doctor or pharmacist, especially if you take ibuprofen regularly.
+
+For occasional pain, acetaminophen (Tylenol) is generally a safer choice with lisinopril. If you need to use ibuprofen, monitor your blood pressure and let your doctor know.`,
+}
+
 // --- DATA SOURCE 0: RxNorm — NDC barcode → drug name ---
 // WHY: Medication bottles have NDC barcodes. Non-readers can scan instead of type.
 // RxNorm accepts NDC codes and returns the RxCUI, which we then resolve to a name.
@@ -274,6 +293,13 @@ app.post('/api/explain', async (req, res) => {
   }
 
   const languageName = LANG_NAMES[lang] || 'English'
+
+  // DEMO_MODE: return pre-written explanation for known demo pairs — no Anthropic call needed
+  if (process.env.DEMO_MODE === 'true') {
+    const demoKey = drugs.map(d => d.toLowerCase()).sort().join(',')
+    const demoExplanation = DEMO_EXPLANATIONS[demoKey]
+    if (demoExplanation) return res.json({ explanation: demoExplanation })
+  }
 
   try {
     const message = await anthropic.messages.create({

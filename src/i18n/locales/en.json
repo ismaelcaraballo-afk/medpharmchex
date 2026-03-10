@@ -16,7 +16,8 @@
     "what_it_means": "What This Means",
     "known_interactions": "Known Interactions ({{count}})",
     "adverse_events": "{{count}} adverse event reports in the FDA FAERS database for these medications",
-    "disclaimer": "This tool provides information only. Always consult a healthcare provider before changing medications."
+    "disclaimer": "This tool provides information only. Always consult a healthcare provider before changing medications.",
+    "print_btn": "Print / Save as PDF"
   },
   "severity": {
     "SAFE": "✓ SAFE",

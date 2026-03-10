@@ -16,7 +16,8 @@
     "what_it_means": "这意味着什么",
     "known_interactions": "已知相互作用（{{count}}）",
     "adverse_events": "FDA FAERS数据库中这些药物有{{count}}条不良事件报告",
-    "disclaimer": "本工具仅供参考。更改药物前请务必咨询医疗专业人员。"
+    "disclaimer": "本工具仅供参考。更改药物前请务必咨询医疗专业人员。",
+    "print_btn": "打印 / 另存为PDF"
   },
   "severity": {
     "SAFE": "✓ 安全",
