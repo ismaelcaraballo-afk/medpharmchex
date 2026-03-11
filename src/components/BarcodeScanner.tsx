@@ -14,6 +14,7 @@
  */
 
 import { useRef, useState } from 'react'
+import { getDrugByNDC } from '../services/drugApi'
 
 interface BarcodeScannerProps {
   onDrug: (name: string) => void   // called with resolved drug name
@@ -71,9 +72,8 @@ export default function BarcodeScanner({ onDrug, disabled }: BarcodeScannerProps
           if (barcodes.length > 0) {
             const ndc = barcodes[0].rawValue
             
-            // Query /api/drug/ndc with the barcode code
-            const response = await fetch(`/api/drug/ndc?code=${encodeURIComponent(ndc)}`)
-            const data = await response.json()
+            // Query backend via drugApi (uses correct base URL + error handling)
+            const data = await getDrugByNDC(ndc)
             
             if (data.name) {
               // Drug found — call onDrug and stop scanning

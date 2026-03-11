@@ -66,7 +66,7 @@ export default function App() {
 
       // Step 5: FAERS adverse event count
       const faersData = await getFAERS(drugs[0])
-      const faersCount: number = faersData.total ?? 0
+      const faersCount: number = faersData.meta?.results?.total ?? 0
 
       setResult({ drugs, severity, explanation, interactions: pairs, faersCount })
 
