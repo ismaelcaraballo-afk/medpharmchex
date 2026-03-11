@@ -328,6 +328,13 @@ Use plain language. No medical jargon. Be direct and caring. Respond in ${langua
   }
 })
 
+// Global error handler — catches anything that escapes route try/catch blocks
+// Logs to console so Vercel function logs show the actual error
+app.use((err, req, res, _next) => {
+  console.error('[MedPharmChex] Unhandled error:', err.message, err.stack)
+  res.status(500).json({ error: err.message || 'Internal server error' })
+})
+
 // Local dev: listen on PORT
 // Vercel serverless: export the app — Vercel routes requests directly, no listen() needed
 if (process.env.NODE_ENV !== 'production') {
