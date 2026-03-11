@@ -329,4 +329,10 @@ Use plain language. No medical jargon. Be direct and caring. Respond in ${langua
   }
 })
 
-app.listen(PORT, () => console.log(`MedPharmChex backend running on :${PORT}`))
+// Local dev: listen on PORT
+// Vercel serverless: export the app — Vercel routes requests directly, no listen() needed
+if (process.env.NODE_ENV !== 'production') {
+  app.listen(PORT, () => console.log(`MedPharmChex backend running on :${PORT}`))
+}
+
+export default app
