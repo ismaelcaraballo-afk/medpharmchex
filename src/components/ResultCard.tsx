@@ -27,8 +27,6 @@ export default function ResultCard({ drugs, severity, explanation, interactions,
   const config = severityConfig[severity as keyof typeof severityConfig] ?? severityConfig.CAUTION
   const severityLabel = t(`severity.${severity}`, severity)
 
-  const handlePrint = () => window.print()
-
   // Web Share API for mobile "save to phone" — falls back to print on desktop
   const handleSave = async () => {
     if (navigator.share) {
