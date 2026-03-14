@@ -15,7 +15,8 @@ import PharmacistCard from './PharmacistCard'
 
 // Only these codes have reliable speech synthesis support across browsers.
 // Fallback to 'en' if the current language isn't in the list.
-const VALID_SPEECH_LANGS = new Set(['en','es','zh','hi','ar','bn','pt','ru','fr','ur','yi','nah'])
+// 'nah' (Nahuatl) removed — no browser TTS voice exists for it.
+const VALID_SPEECH_LANGS = new Set(['en','es','zh','hi','ar','bn','pt','ru','fr','ur','yi'])
 
 interface VisualResultProps {
   severity: string
@@ -76,6 +77,17 @@ export default function VisualResult({ severity, drugs, explanation }: VisualRes
   const [showPharmacist, setShowPharmacist] = useState(false)
   const [autoPlayEnabled, setAutoPlayEnabled] = useState(false)
 
+  // Check if the browser has any voice for the current language at runtime.
+  // Some languages (e.g. Nahuatl) have no TTS voice in any OS — disable audio UI for those.
+  const baseLang = i18n.language.split('-')[0]
+  const ttsLang = VALID_SPEECH_LANGS.has(baseLang) ? i18n.language : 'en'
+  const ttsAvailable = (() => {
+    if (!window.speechSynthesis) return false
+    if (baseLang === 'en') return true  // always available
+    const voices = window.speechSynthesis.getVoices()
+    return voices.length === 0 || voices.some(v => v.lang.startsWith(baseLang))
+  })()
+
   // Haptic feedback on result load — felt without reading or hearing
   useEffect(() => {
     const pattern = HAPTIC[severity as keyof typeof HAPTIC]
@@ -97,16 +109,13 @@ export default function VisualResult({ severity, drugs, explanation }: VisualRes
   }, [])
 
   const speak = () => {
-    if (!window.speechSynthesis) return
+    if (!window.speechSynthesis || !ttsAvailable) return
     window.speechSynthesis.cancel()
 
     const text = explanation || config.audioText(drugs)
     const utterance = new SpeechSynthesisUtterance(text)
 
-    // Validate language code before passing to browser speech engine.
-    // An unrecognized lang code can cause silent failure or wrong voice selection.
-    const baseLang = i18n.language.split('-')[0]
-    utterance.lang = VALID_SPEECH_LANGS.has(baseLang) ? i18n.language : 'en'
+    utterance.lang = ttsLang
     utterance.rate = 0.85   // slightly slower — clearer for non-native speakers
     utterance.pitch = 1
 
@@ -143,11 +152,10 @@ export default function VisualResult({ severity, drugs, explanation }: VisualRes
             key={i}
             className="visual-drug-pill visual-drug-pill-btn"
             onClick={() => {
-              if (!window.speechSynthesis) return
+              if (!window.speechSynthesis || !ttsAvailable) return
               window.speechSynthesis.cancel()
               const u = new SpeechSynthesisUtterance(drug)
-              const baseLang = i18n.language.split('-')[0]
-              u.lang = VALID_SPEECH_LANGS.has(baseLang) ? i18n.language : 'en'
+              u.lang = ttsLang
               u.rate = 0.85
               window.speechSynthesis.speak(u)
             }}
@@ -162,30 +170,41 @@ export default function VisualResult({ severity, drugs, explanation }: VisualRes
 
       {/* Audio + pharmacist card controls */}
       <div className="visual-audio-controls">
+        {!ttsAvailable && (
+          <span style={{ fontSize: '0.75rem', opacity: 0.6, alignSelf: 'center' }}>
+            🔇 Audio not available for this language
+          </span>
+        )}
         <button
           className="audio-btn audio-btn-play"
           onClick={speak}
+          disabled={!ttsAvailable}
           aria-label={isSpeaking ? 'Reading aloud — tap to stop' : 'Read result aloud'}
           aria-pressed={isSpeaking}
-          title="Read result aloud"
+          title={ttsAvailable ? 'Read result aloud' : 'Audio not available for this language'}
+          style={!ttsAvailable ? { opacity: 0.3, cursor: 'not-allowed' } : {}}
         >
           {isSpeaking ? '🔊' : '🔈'}
         </button>
         <button
           className="audio-btn audio-btn-stop"
           onClick={stopSpeaking}
+          disabled={!ttsAvailable}
           aria-label="Stop reading"
           title="Stop"
+          style={!ttsAvailable ? { opacity: 0.3, cursor: 'not-allowed' } : {}}
         >
           ⏹
         </button>
         <button
           className="audio-btn audio-btn-autoplay"
-          onClick={() => setAutoPlayEnabled(!autoPlayEnabled)}
+          onClick={() => ttsAvailable && setAutoPlayEnabled(!autoPlayEnabled)}
+          disabled={!ttsAvailable}
           aria-label="Auto-play audio on/off"
           aria-pressed={autoPlayEnabled}
-          title="Toggle auto-play"
+          title={ttsAvailable ? 'Toggle auto-play' : 'Audio not available for this language'}
           type="button"
+          style={!ttsAvailable ? { opacity: 0.3, cursor: 'not-allowed' } : {}}
         >
           {autoPlayEnabled ? '🔔' : '🔕'}
         </button>
