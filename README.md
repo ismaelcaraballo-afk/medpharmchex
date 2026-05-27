@@ -2,7 +2,7 @@
 
 **Does it mix?** MedPharmChex checks drug combinations for dangerous interactions, scores severity using real FDA adverse event data, and explains the risks in plain English using AI.
 
-Built as a Pursuit L2 capstone project by Ismael Caraballo and Paula Maiguru.
+Built as a Pursuit L2 capstone project by Ismael Caraballo and Paula Lawton.
 
 ---
 
@@ -70,7 +70,7 @@ cd server && node index.js  # backend on http://localhost:3000
 ## Team
 
 - **Ismael Caraballo** ([@ismaelcaraballo-afk](https://github.com/ismaelcaraballo-afk)) — Backend, API integration, architecture
-- **Paula Maiguru** ([@PMAIGURU2026](https://github.com/PMAIGURU2026)) — Frontend, UI/UX, product vision
+- **Paula Lawton** ([@PMAIGURU2026](https://github.com/PMAIGURU2026)) — Frontend, UI/UX, product vision
 
 ---
 
